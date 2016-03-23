@@ -155,7 +155,7 @@ The following table gives an overview over the decider spec parameters:
 | ``terminate_workflow_after_completion``   | ``bool``        | If ``True``, the Decider terminates after workflow completion.    |
 
 ### Dynamic Decider
-The ``DynamicDecider`` reads the list of activity tasks from the workflow input. See example ``examples/dynamic_decider/``.
+The ``DynamicDecider`` reads the list of activity tasks from the workflow input. The activity tasks are not provided at the time of the Decider initialization. See example ``examples/dynamic_decider/``.
 The following code shows the start of the workflow execution of the example. ``activity_tasks`` define the tasks to be executed. 
 ```python
 workflow_args = {'domain': 'floto_test', 
@@ -168,6 +168,21 @@ workflow_args = {'domain': 'floto_test',
 floto.api.Swf().start_workflow_execution(**workflow_args)
 ```
 ### Decider Daemon
+floto provides a "daemonized" service. It is described below how to start a "decider daemon", which acts on signals sent to SWF. 
+
+### Start Decider Daemon
+```python
+import floto.decider
+floto.decider.Daemon(domain='floto_test', task_list='floto_daemon').run()
+```
+Start the "daemon workflow" once:
+```python
+import floto.api
+
+floto.api.Swf().start_workflow_execution(domain='floto_test', 
+        workflow_type_name='floto_daemon_type', workflow_type_version='v1', 
+        task_list='floto_daemon', workflow_id='floto_daemon') 
+```
 ### JSON Representation of Decider Specifications
 ## Activities
 ### Activity
