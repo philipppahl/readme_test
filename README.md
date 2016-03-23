@@ -60,15 +60,22 @@ Let's get started with a simple example of three activities as depicted in figur
 The definition of the activity tasks:
 ```python
 from floto.specs.task import ActivityTask
-from floto.specs import DeciderSpec
-from floto.decider import Decider
 
 activity_task_a = ActivityTask(name='ActivityA', version='v1')
 activity_task_b = ActivityTask(name='ActivityB', version='v1')
 activity_task_c = ActivityTask(name='ActivityC', version='v1', requires=[activity_task_a, activity_task_b])
 ```
+floto provides different kinds of tasks which can be used to define the workflow logic. In the aforementioned example objects of type ``ActivityTask`` have been used. Furthermore there are Timer, ChildWorkflow and Generator tasks which are described in the following sections.
 ### Tasks
+The tasks are the building blocks of the execution logic. All tasks implement the ``floto.specs.task.Task`` interface, which has the fields ``id_`` and ``requires``. The id of task must be unique on the workflow level. For Timer objects it has to be set explicitly. For the other tasks there is a default value which is derived by the object's properties, however it can be set explicitly. This is described in the corresponding sections. Dependencies of the tasks are defined by a list of required tasks. 
 #### Activity Task
+| Parameter | Type | Description |
+| :---         | :---           | :---          |
+| ``name`` [Required]   | ``str``        | Your SWF domain.    |
+| ``task_list``   | ``str``        | The Decider task list.    |
+| ``activity_task_list``   | ``str``        | The task list of the activities.    |
+| ``activity_tasks``   | ``list``        | List of ``floto.specs.Task`` objects. See next section.    |
+| ``repeat_workflow``   | ``bool``        | When ``True``, the workflow is restarted after successful completion.    |
 #### Generator
 #### ChildWorkflow
 #### Timer
