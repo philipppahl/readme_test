@@ -81,8 +81,18 @@ Activity tasks are tasks which trigger the execution of activity function by the
 
 #### Generator
 ``floto.specs.task.Generator`` inherits from ``ActivityTask`` and implements the same interface. Generators are activities which spawn tasks that are subsequently included in the execution logic. More on generators in section [Generator](#generators). 
-For an example which uses generators see the [S3CopyExample](#examples/s3_file_string_length/).
+To see how generators work see the ``examples/s3_file_string_length`` example.
 #### ChildWorkflow
+Deciders can start child workflows during execution. See example ``examples/child_workflow``. The following table gives an overview over the child workflow task parameters:
+
+| Parameter | Type | Description |
+| :---         | :---           | :---          |
+| ``name`` [Required]   | ``str``        | The name of the activity. Corresponds to the name of the activity as defined by the [worker](#activity-worker).   |
+| ``version`` [Required]   | ``str``        | The version of the activity. Corresponds to the version of the activity as defined by the [worker](#activity-worker).    |
+| ``activity_id``   | ``str``        | The unique id of the task. Defaults to ``<name:version:hash_id>``. The ``hash_id`` is derived depending on the input and required tasks.    |
+| ``requires``   | ``list``        | List of ``floto.specs.task.Task`` objects, which defines the dependencies.    |
+| ``input``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
+
 #### Timer
 #### Retry Strategy
 ## Decider
