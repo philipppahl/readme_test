@@ -52,29 +52,20 @@ simple workflow.
 The example shows the definition of a simple workflow with a single task. The task is defined and passed to the Decider. Furthermore an activity is defined so that the worker is able to executes the activity function on request. The Decider and the worker are started and the workflow execution is initiated. The single steps to define the components necessary to execute a workflow are discussed in more detail in the next sections.
 
 ## Defining the Workflow's Logics
-The business logic of your distributed application is handled by so called Deciders. Deciders act on events like workflow start, task completion or task failure and schedule tasks that are to be executed. The logic itself is defined by a list of tasks. The tasks are then [passed to the decider](#inputs_and_results).
-Let's get started with a simple example of three activities as depicted in figure 1.  In this example ActivityA and ActivityB are scheduled after the workflow start. ActivityC is executed once they are completed.
+The business logic of your distributed application is handled by so called Deciders. Deciders act on events like workflow start, task completion or task failure and schedule tasks that are to be executed. The logic itself is defined by a list of tasks. The tasks are then [passed to the decider](#decider).
+Let's get started with a simple example of three activities as depicted in figure 1.  In this example ``ActivityA`` and ``ActivityB`` are scheduled after the workflow start. ``ActivityC`` is executed once they are completed.
 
 ![alt tag](docs/images/decider_spec_01.png)
 
-The Decider implements the application's business logic. The following code defines the execution logic as depicted in figure 1. In this example ``ActivityA`` and ``ActivityB`` are scheduled after the workflow start. ``ActivityC`` is executed once they are completed.
-
-
+The definition of the activity tasks:
 ```python
-from floto.specs.task import ActivityTask, DeciderSpec
+from floto.specs.task import ActivityTask
 from floto.specs import DeciderSpec
 from floto.decider import Decider
 
 activity_task_a = ActivityTask(name='ActivityA', version='v1')
 activity_task_b = ActivityTask(name='ActivityB', version='v1')
 activity_task_c = ActivityTask(name='ActivityC', version='v1', requires=[activity_task_a, activity_task_b])
-
-decider_spec = DeciderSpec(domain='your_domain',
-                           task_list='your_decider_task_list',
-                           default_activity_task_list='your_activity_task_list',
-                           activity_tasks=[activity_task_a, activity_task_b, activity_task_c])
-
-Decider(decider_spec=decider_spec).run()
 ```
 ### Tasks
 #### Activity Task
