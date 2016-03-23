@@ -78,3 +78,45 @@ Decider(decider_spec=decider_spec).run()
 #### ChildWorkflow
 #### Timer
 #### Retry Strategy
+## Decider
+### Dynamic Decider
+### Decider Daemon
+### JSON Representation of Decider Specifications
+## Activities
+### Activity
+### Generator
+### Activity Context
+### Activity Result
+## Activity Worker
+### Activity Worker Heartbeats
+## floto's simple SWF API
+For easier access to the SWF API floto provides functionality throught the ``floto.api`` module.
+### Interface to SWF
+In order to communicate with SWF create an ``swf`` object:
+```python
+import floto.api
+swf = floto.api.Swf()
+```
+### Start the Workflow
+```python
+swf.start_workflow_execution(domain='floto_test',    
+                             workflow_type_name=workflow_type.name,    
+                             workflow_type_version=workflow_type.version,    
+                             task_list='decider_task_list',
+                             input='your_input')
+```
+
+### Register Domains, Workflow Type and Activity Type
+```python
+
+# Register a domain
+swf.domains.register_domain('floto_test')
+
+# Define and register a workflow type.
+workflow_type = floto.api.WorkflowType(domain='floto_test', name='my_workflow_type', version='v1')
+swf.register_workflow_type(workflow_type)
+
+# Define and register an activity type
+activity_type = floto.api.ActivityType(domain='floto_test', name='simple_activity', version='v1')
+swf.register_activity_type(activity_type)
+```
