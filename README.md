@@ -168,9 +168,9 @@ workflow_args = {'domain': 'floto_test',
 floto.api.Swf().start_workflow_execution(**workflow_args)
 ```
 ### Decider Daemon
-floto provides a "daemonized" service. It is described below how to start a "decider daemon", which acts on signals sent to SWF. 
+floto provides a "daemonized" service. It is described below how to start a "Decider daemon", which acts on signals sent to SWF. 
 
-### Start Decider Daemon
+Start the Decider daemon 
 ```python
 import floto.decider
 floto.decider.Daemon(domain='floto_test', task_list='floto_daemon').run()
@@ -183,8 +183,70 @@ floto.api.Swf().start_workflow_execution(domain='floto_test',
         workflow_type_name='floto_daemon_type', workflow_type_version='v1', 
         task_list='floto_daemon', workflow_id='floto_daemon') 
 ```
+
+The Daemon acts on signals and starts child workflows and child deciders as specified in the 
+Decider Specification.
+
+```python
+import floto.api
+from floto.specs import DeciderSpec    
+from floto.specs.task import ActivityTask
+
+activity_task_a = ActivityTask(name='ActivityA', version='v1') 
+
+decider_spec = floto.specs.DeciderSpec(domain='floto_test',
+             default_activity_task_list='my_activity_task_list',
+             activity_tasks=[activity_task_a])
+
+# Send a signal to the daemon and initiate a child workflow
+floto.api.Swf().signal_workflow_execution(domain='floto_test', workflow_id='floto_daemon',
+                                          signal_name='startChildWorkflowExecution',
+                                          input={'decider_spec':decider_spec})
+```
+The difference between the Decider daemon and the DynamicDecider is that the daemon consumes a complete decider spec which allows for the definition of all decider related parameter like task list and domain. On the other hand the workflow which is sent to the daemon is not part of the current workflow, which makes error handling more difficult. 
 ### JSON Representation of Decider Specifications
+Decider Specifications have a JSON representation, which alternatively can be passed to a 
+``Decider``. To retrieve the JSON representation of a decider spec call the ``to_json()`` of the
+spec object.
+
+```JSON
+{
+    "activity_tasks": [
+        {
+            "id_": "simple_activity:v1:2be88ca424",
+            "name": "simple_activity",
+            "type": "floto.specs.task.ActivityTask",
+            "version": "v1"
+        }
+    ],
+    "default_activity_task_list": "hello_world_atl",
+    "domain": "floto_test",
+    "repeat_workflow": false,
+    "task_list": "simple_decider",
+    "terminate_decider_after_completion": true,
+    "type": "floto.specs.DeciderSpec"
+}
+```
 ## Activities
+The activity worker are the programs which perform the actual work, e.g. data cleansing, database updates or or data processing. In floto ``ActivityWorker`` objects are initiated and started. The worker are triggered by the scheduling of activity tasks by the Deciders. They poll for activity tasks and react with the execution of the corresponding activity. The activities which the worker can handle, react on and run are defined beforehand. The Activities are defined by means of ```@floto.activity``` decorators. ``name`` and ``version`` handed over to the decorator must correspond to the ``ActivityTask`` defined in the Decider logic in order to get executed. The activity itself can have a ``context`` parameter which provides input to the function (See [Inputs and Results](#input-and-results)). The ``task_list`` of the ``ActivityWorker`` must correspond to the ``activity_task_list`` of the Decider definition.
+
+```python
+import floto
+
+@floto.activity(name='ActivityA', version='v1')
+def activity_a(context):
+    print('Running ActivityA')
+    print(context)
+    return {'your':'result_activity_a'}
+
+@floto.activity(name='ActivityB', version='v1')
+def activity_b():
+    print('Running ActivityB')
+    return {'your':'result_activity_b'}
+
+worker = floto.ActivityWorker(domain='floto_test', task_list='your_activity_task_list')
+worker.run()
+```
 ### Activity
 ### Generator
 ### Activity Context
