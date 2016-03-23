@@ -231,7 +231,6 @@ spec object.
 The activity worker are the programs which perform the actual work, e.g. data cleansing, database updates or or data processing. In floto ``ActivityWorker`` objects are initiated and started. The worker are triggered by the scheduling of activity tasks by the Deciders. They poll for activity tasks and react with the execution of the corresponding activity. The activities which the worker can handle, react on and run are defined beforehand. The Activities are defined by means of ``@floto.activity`` and ``@floto.generator`` decorators. 
 
 ### Activity
-
 The following code example show the definition of two activity functions:
 ```python
 import floto
@@ -289,23 +288,28 @@ workflow input (See [Start the workflow](#start-the-workflow)) through ``context
 If ``ActivityB`` requires ``ActivityA`` and ``ActivityA`` has returned a result it can access it 
 through ``context['<id of ActivityA>']``
 
-**Task definition:** If an input has been defined at the time of the ``ActivityTask`` definition 
-(cf. [Activity Task Inputs](#activity-task-inputs)) it can be accessed by the activity through 
-``context['activity_task']``
+**ActivityTask definition:** If an input has been defined at the time of the ``floto.specs.task.ActivityTask`` definition  it can be accessed by the activity through ``context['activity_task']``
 
-After the **successful workflow completion** the results of the preceding activities are collected 
-and recorded in the ``WorkflowExecutionCompleted`` event.
-
-After a **failed  worfklow execution** the error messages of the failed activities are collected 
-and recorded in the ``WorkflowExecutionFailed`` event.
+**ChildWorkflow definition:** If an input has been defined at the time of the ``floto.specs.task.ChildWorkflow`` definition  it can be accessed by the activity through ``context['child_workflow']``
 
 ### Activity Result
+The return values of activity functions are recorded as result of the activities. The result can be ``str`` or JSON serializable objects.
+
+After the **successful workflow completion** the results of the preceding activities are collected and recorded in the ``WorkflowExecutionCompleted`` event.
+
+After a **failed  worfklow execution** the error messages of the failed activities are collected and recorded in the ``WorkflowExecutionFailed`` event.
 ## Activity Worker
+After the definition of activities and generators functions a worker is initiated and run with:
 ```
 worker = floto.ActivityWorker(domain='floto_test', task_list='your_activity_task_list')
 worker.run()
 ```
 ### Activity Worker Heartbeats
+Activity workers send heartbeats to SWF. The heartbeat interval is set by:
+```
+floto.ActivityWorker(domain='floto_test', task_list='your_activity_task_list', heartbeat_in_seconds=90)
+```
+The default value is 90 seconds. If it is set to 0, no heartbeat is sent.
 ## floto's simple SWF API
 For easier access to the SWF API floto provides functionality throught the ``floto.api`` module.
 ### Interface to SWF
