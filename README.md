@@ -229,8 +229,10 @@ spec object.
 ```
 ## Activities
 The activity worker are the programs which perform the actual work, e.g. data cleansing, database updates or or data processing. In floto ``ActivityWorker`` objects are initiated and started. The worker are triggered by the scheduling of activity tasks by the Deciders. They poll for activity tasks and react with the execution of the corresponding activity. The activities which the worker can handle, react on and run are defined beforehand. The Activities are defined by means of ``@floto.activity`` and ``@floto.generator`` decorators. 
-``name`` and ``version`` handed over to the decorator must correspond to the ``ActivityTask`` defined in the Decider logic in order to get executed. The activity itself can have a ``context`` parameter which provides input to the function (See [Activity Context](#activity-context)). 
 
+### Activity
+
+The following code example show the definition of two activity functions:
 ```python
 import floto
 
@@ -244,15 +246,43 @@ def activity_a(context):
 def activity_b():
     print('Running ActivityB')
     return {'your':'result_activity_b'}
-
-worker = floto.ActivityWorker(domain='floto_test', task_list='your_activity_task_list')
-worker.run()
 ```
-### Activity
+
+``name`` and ``version`` are handed over to the decorator and must correspond to ``name`` and ``version`` of the  ``ActivityTask`` defined in the Decider logic in order to get executed. The activity itself can have a ``context`` parameter which provides input to the function (See [Activity Context](#activity-context)). 
 ### Generator
+Generators are special kinds of activities which must return a list of activity tasks. These activity tasks are subsequently included in the execution logic, i.e. a generator is able to spawn tasks which e.g. depend on the input of the activity function.
+
+The following code shows the generator from the ``examples/s3_file_string_length`` example.
+```
+@floto.generator(name='weekDays', version='1')
+def week_days(context):
+    from_date_iso = context['workflow']['from_date']
+    to_date_iso = context['workflow']['to_date']
+    from_date = dt.datetime.strptime(from_date_iso, '%Y-%m-%d').date()
+    to_date = dt.datetime.strptime(to_date_iso, '%Y-%m-%d').date()
+   
+    days = [from_date + dt.timedelta(days=n) for n in range(0, (to_date-from_date).days+1)]
+    week_days = [day for day in days if day.weekday()<5]
+
+    def get_tasks(date):
+        rs = floto.specs.retry_strategy.InstantRetry(retries=3)
+        copy_file = ActivityTask(name='copyFile', version='1', input=date.isoformat(), 
+                retry_strategy=rs)
+        length = ActivityTask(name='fileLength', version='1', requires=[copy_file], 
+                retry_strategy=rs)
+        return [copy_file, length]
+
+    tasks = [get_tasks(date) for date in week_days]
+    tasks = [t for sublist in tasks for t in sublist] 
+    return tasks
+```
 ### Activity Context
 ### Activity Result
 ## Activity Worker
+```
+worker = floto.ActivityWorker(domain='floto_test', task_list='your_activity_task_list')
+worker.run()
+```
 ### Activity Worker Heartbeats
 ## floto's simple SWF API
 For easier access to the SWF API floto provides functionality throught the ``floto.api`` module.
