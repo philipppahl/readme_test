@@ -148,12 +148,11 @@ The following table gives an overview over the decider spec parameters:
 | Parameter | Type | Description |
 | :---         | :---           | :---          |
 | ``domain`` [Required]   | ``str``        | The SWF domain.   |
-| ``workflow_type_version`` [Required]   | ``str``        | The version of the workflow type.    |
-| ``workflow_id``   | ``str``        | The unique id of the task. Defaults to ``<workflow_type_name:workflow_type_version:hash_id>``. The ``hash_id`` is derived depending on the input and required tasks.    |
-| ``requires``   | ``list``        | List of ``floto.specs.task.Task`` objects, which defines the dependencies.    |
-| ``input``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
-| ``retry_strategy``   | ``floto.specs.retry_strategy.Strategy``        | The retry strategy which defines the behavior in case of task failure. See section [Retry Strategy](#retry-strategy)    |
-| ``task_list``   | ``str``        | The decider task list of the child workflow.    |
+| ``task_list``   | ``str``        | The decider task list.    |
+| ``activity_tasks``   | ``list``        | List of ``floto.specs.task.Task`` objects, which defines the execution logic.      |
+| ``default_activity_task_list``   | ``str``        | The default task list of the activities. Used when not set explicitly by the task.    |
+| ``repeat_workflow``   | ``bool``        | If ``True``, the Decider restarts the workflow execution after completion.    |
+| ``terminate_workflow_after_completion``   | ``bool``        | If ``True``, the Decider terminates after workflow completion.    |
 
 ### Dynamic Decider
 ### Decider Daemon
