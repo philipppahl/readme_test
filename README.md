@@ -81,7 +81,7 @@ Activity tasks are tasks which trigger the execution of activity function by the
 
 #### Generator
 ``floto.specs.task.Generator`` inherits from ``ActivityTask`` and implements the same interface. Generators are activities which spawn tasks that are subsequently included in the execution logic. More on generators in section [Generator](#generators). 
-For an example which uses generators see the [S3CopyExample](#examples/s3_file_string_length).
+For an example which uses generators see the [S3CopyExample](#examples/s3_file_string_length/).
 #### ChildWorkflow
 #### Timer
 #### Retry Strategy
