@@ -69,7 +69,6 @@ floto provides different kinds of tasks which can be used to define the workflow
 ### Tasks
 The tasks are the building blocks of the execution logic. All tasks implement the ``floto.specs.task.Task`` interface, which has the fields ``id_`` and ``requires``. The id of task must be unique on the workflow level. For ``Timer`` objects it has to be set explicitly. For the other tasks there is a default value which is derived by the object's properties, however it can be set explicitly. This is described in the corresponding sections. Dependencies of the tasks are defined by a list of required tasks. 
 #### Activity Task
-Activity tasks are tasks which trigger the execution of activity function by the Decider. ``ActivityTask`` objects have the following properties:
 | Parameter | Type | Description |
 | :---         | :---           | :---          |
 | ``name`` [Required]   | ``str``        | The name of the activity. Corresponds to the name of the activity as defined by the [worker](#activity-worker).   |
