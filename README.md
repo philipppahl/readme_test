@@ -155,6 +155,18 @@ The following table gives an overview over the decider spec parameters:
 | ``terminate_workflow_after_completion``   | ``bool``        | If ``True``, the Decider terminates after workflow completion.    |
 
 ### Dynamic Decider
+The ``DynamicDecider`` reads the list of activity tasks from the workflow input. See example ``examples/dynamic_decider/``.
+The following code shows the start of the workflow execution of the example. ``activity_tasks`` define the tasks to be executed. 
+```python
+workflow_args = {'domain': 'floto_test', 
+                 'workflow_type_name': 's3_files_example',
+                 'workflow_type_version': '1',
+                 'task_list': 's3_files',
+                 'workflow_id': 's3_files',
+                 'input': {'activity_tasks':activity_tasks}}
+
+floto.api.Swf().start_workflow_execution(**workflow_args)
+```
 ### Decider Daemon
 ### JSON Representation of Decider Specifications
 ## Activities
