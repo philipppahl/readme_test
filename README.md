@@ -79,7 +79,7 @@ Activity tasks are tasks which trigger the execution of activity function by the
 | ``requires``   | ``list``        | List of ``floto.specs.task.Task`` objects, which defines the dependencies.    |
 | ``input``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
 | ``retry_strategy``   | ``floto.specs.retry_strategy.Strategy``        | The retry strategy which defines the behavior in case of task failure. See section [Retry Strategy](#retry-strategy)    |
-| ``input``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
+| ``task_list``   | ``str``        | The task list which is used when the task is scheduled. If not set the default activity task list of the decider is used.    |
 
 #### Generator
 ``floto.specs.task.Generator`` inherits from ``ActivityTask`` and implements the same interface. Generators are activities which spawn tasks that are subsequently included in the execution logic. More on generators in section [Generator](#generators). 
@@ -94,8 +94,8 @@ Deciders can start child workflows during execution. See example ``examples/chil
 | ``workflow_id``   | ``str``        | The unique id of the task. Defaults to ``<workflow_type_name:workflow_type_version:hash_id>``. The ``hash_id`` is derived depending on the input and required tasks.    |
 | ``requires``   | ``list``        | List of ``floto.specs.task.Task`` objects, which defines the dependencies.    |
 | ``input``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
-| ``retry_strategy``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
-| ``input``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
+| ``retry_strategy``   | ``floto.specs.retry_strategy.Strategy``        | The retry strategy which defines the behavior in case of task failure. See section [Retry Strategy](#retry-strategy)    |
+| ``task_list``   | ``str``        | The decider task list of the child workflow.    |
 
 #### Timer
 #### Retry Strategy
