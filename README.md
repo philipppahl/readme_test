@@ -277,6 +277,28 @@ def week_days(context):
     return tasks
 ```
 ### Activity Context
+The context variable provides information for the activities. The information that is sent around is limited in size. You should not think of it as real input data to a CPU intense process, but instead of e.g. paths to this data.
+
+The inputs that activities get access to through the context objects originate from different
+sources:
+
+**Workflow start:** When an activity is scheduled after the start of a workflow it can access the
+workflow input (See [Start the workflow](#start-the-workflow)) through ``context['workflow']``
+
+**Other activities:** The activities have access to the results of the activities they depend on. 
+If ``ActivityB`` requires ``ActivityA`` and ``ActivityA`` has returned a result it can access it 
+through ``context['<id of ActivityA>']``
+
+**Task definition:** If an input has been defined at the time of the ``ActivityTask`` definition 
+(cf. [Activity Task Inputs](#activity-task-inputs)) it can be accessed by the activity through 
+``context['activity_task']``
+
+After the **successful workflow completion** the results of the preceding activities are collected 
+and recorded in the ``WorkflowExecutionCompleted`` event.
+
+After a **failed  worfklow execution** the error messages of the failed activities are collected 
+and recorded in the ``WorkflowExecutionFailed`` event.
+
 ### Activity Result
 ## Activity Worker
 ```
