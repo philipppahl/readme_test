@@ -228,7 +228,8 @@ spec object.
 }
 ```
 ## Activities
-The activity worker are the programs which perform the actual work, e.g. data cleansing, database updates or or data processing. In floto ``ActivityWorker`` objects are initiated and started. The worker are triggered by the scheduling of activity tasks by the Deciders. They poll for activity tasks and react with the execution of the corresponding activity. The activities which the worker can handle, react on and run are defined beforehand. The Activities are defined by means of ```@floto.activity``` decorators. ``name`` and ``version`` handed over to the decorator must correspond to the ``ActivityTask`` defined in the Decider logic in order to get executed. The activity itself can have a ``context`` parameter which provides input to the function (See [Inputs and Results](#input-and-results)). The ``task_list`` of the ``ActivityWorker`` must correspond to the ``activity_task_list`` of the Decider definition.
+The activity worker are the programs which perform the actual work, e.g. data cleansing, database updates or or data processing. In floto ``ActivityWorker`` objects are initiated and started. The worker are triggered by the scheduling of activity tasks by the Deciders. They poll for activity tasks and react with the execution of the corresponding activity. The activities which the worker can handle, react on and run are defined beforehand. The Activities are defined by means of ``@floto.activity`` and ``@floto.generator`` decorators. 
+``name`` and ``version`` handed over to the decorator must correspond to the ``ActivityTask`` defined in the Decider logic in order to get executed. The activity itself can have a ``context`` parameter which provides input to the function (See [Activity Context](#activity-context)). 
 
 ```python
 import floto
