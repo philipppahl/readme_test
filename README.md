@@ -98,8 +98,63 @@ Deciders can start child workflows during execution. See example ``examples/chil
 | ``task_list``   | ``str``        | The decider task list of the child workflow.    |
 
 #### Timer
+Timers are used to define time-outs. Time-outs can be used inside the execution graph to delay the execution of a subsequent task (figure 2). Secondly they can be used as independent task in order to delay the execution of a subsequent workflow execution (figure 3).
+
+Example task definitions for the delayed execution of ``ActivityB``:
+
+![alt tag](docs/images/decider_spec_02.png)
+
+```python
+activity_task_a = ActivityTask(name='ActivityA', version='v1')
+timer_30        = Timer(id_='Timer30', delay_in_seconds=30, requires=[activity_task_a])
+activity_task_b = ActivityTask(name='ActivityB', version='v1', requires=[timer_30])
+```
+
+Example task definitions for a "repeated workflow execution" delay. In this case the workflow does not complete before the ``timer_3600`` times out after one hour.
+
+![alt tag](docs/images/decider_spec_03.png)
+
+```python
+activity_task_a = ActivityTask(name='ActivityA', version='v1')
+activity_task_b = ActivityTask(name='ActivityB', version='v1', requires=[activity_task_a])
+timer_3600      = Timer(id_='Timer3600', delay_in_seconds=3600)
+```
 #### Retry Strategy
+Sometimes activities fail or time out. A retry strategy can be defined for ``ActivityTask``, ``Generator`` and ``ChildWorkflow`` objects. In case a strategy is defined, the task is rescheduled after an execution failure. The following example shows a task definition which reschedules the task three times before the workflow fails.
+
+```python
+from floto.specs.retry_strategy import InstantRetry
+
+retry_strategy = InstantRetry(retries=3)
+activity_task = ActivityTask(name='ActivityA', version='v1', retry_strategy=retry_strategy)
+```
 ## Decider
+Deciders are the parts of your application which orchestrate the workflow execution. They are defined by means of Decider specifications:
+
+```python
+from floto.specs import DeciderSpec
+from floto.decider import Decider
+
+decider_spec = DeciderSpec(domain='your_domain',
+                           task_list='your_decider_task_list',
+                           default_activity_task_list='your_activity_task_list',
+                           activity_tasks=[activity_task_a, activity_task_b, activity_task_c])
+
+Decider(decider_spec=decider_spec).run()
+```
+
+The following table gives an overview over the decider spec parameters:
+
+| Parameter | Type | Description |
+| :---         | :---           | :---          |
+| ``domain`` [Required]   | ``str``        | The SWF domain.   |
+| ``workflow_type_version`` [Required]   | ``str``        | The version of the workflow type.    |
+| ``workflow_id``   | ``str``        | The unique id of the task. Defaults to ``<workflow_type_name:workflow_type_version:hash_id>``. The ``hash_id`` is derived depending on the input and required tasks.    |
+| ``requires``   | ``list``        | List of ``floto.specs.task.Task`` objects, which defines the dependencies.    |
+| ``input``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
+| ``retry_strategy``   | ``floto.specs.retry_strategy.Strategy``        | The retry strategy which defines the behavior in case of task failure. See section [Retry Strategy](#retry-strategy)    |
+| ``task_list``   | ``str``        | The decider task list of the child workflow.    |
+
 ### Dynamic Decider
 ### Decider Daemon
 ### JSON Representation of Decider Specifications
