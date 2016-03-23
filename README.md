@@ -78,7 +78,6 @@ Activity tasks are tasks which trigger the execution of activity function by the
 | ``requires``   | ``list``        | List of ``floto.specs.task.Task`` objects, which defines the dependencies.    |
 | ``input``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
 #### Generator
-``floto.specs.task.Generator`` inherits from ``ActivityTask`` and implements the same interface. Generators are activities which spawn tasks that are subsequently included in the execution logic. More on generators in section [Generator](#generator).
 #### ChildWorkflow
 #### Timer
 #### Retry Strategy
