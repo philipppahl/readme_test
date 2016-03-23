@@ -48,7 +48,7 @@ simple workflow.
 The example shows the definition of a simple workflow with a single task. The task is defined and passed to the Decider. Furthermore an activity is defined so that the worker is able to executes the activity function on request. The Decider and the worker are started and the workflow execution is initiated. The single steps to define the components necessary to execute a workflow are discussed in more detail in the next sections.
 
 ## Defining the Workflow's Logics
-The business logic of your distributed application is handled by so called Deciders. Deciders act on events like workflow start, task completion or task failure and schedule tasks that are to be executed. The logic itself is defined by a list of tasks. The tasks are then passed to the decider as described in section xx.
+The business logic of your distributed application is handled by so called Deciders. Deciders act on events like workflow start, task completion or task failure and schedule tasks that are to be executed. The logic itself is defined by a list of tasks. The tasks are then [passed to the decide](#inputs_and_results).
 Let's get started with a simple example of three activities as depicted in figure 1.  In this example ActivityA and ActivityB are scheduled after the workflow start. ActivityC is executed once they are completed.
 
 ![alt tag](docs/images/decider_spec_01.png)
