@@ -87,9 +87,9 @@ Deciders can start child workflows during execution. See example ``examples/chil
 
 | Parameter | Type | Description |
 | :---         | :---           | :---          |
-| ``name`` [Required]   | ``str``        | The name of the activity. Corresponds to the name of the activity as defined by the [worker](#activity-worker).   |
-| ``version`` [Required]   | ``str``        | The version of the activity. Corresponds to the version of the activity as defined by the [worker](#activity-worker).    |
-| ``activity_id``   | ``str``        | The unique id of the task. Defaults to ``<name:version:hash_id>``. The ``hash_id`` is derived depending on the input and required tasks.    |
+| ``workflow_type_name`` [Required]   | ``str``        | The name of the workflow type.   |
+| ``workflow_type_version`` [Required]   | ``str``        | The version of the workflow type.    |
+| ``workflow_id``   | ``str``        | The unique id of the task. Defaults to <workflow_type_name:workflow_type_version:hash_id>. The ``hash_id`` is derived depending on the input and required tasks.    |
 | ``requires``   | ``list``        | List of ``floto.specs.task.Task`` objects, which defines the dependencies.    |
 | ``input``   | ``str``, ``obj``        | The input provided by the task definition. If an object is provided it must be JSON serializable, e.g. of type dict or list. For more information on inputs see section [Activity Context](#activity-context).    |
 
